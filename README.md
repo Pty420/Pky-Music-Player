@@ -1,3 +1,5 @@
+# 注意：目前仅支持Linux
+
 # PkyMusic
 这是一个基于 Rust 中的 Rodio 开发的简易CLI命令行音频播放器
 
