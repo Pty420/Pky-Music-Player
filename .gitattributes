@@ -1,3 +1,8 @@
+*.d  linguist-detectable=false
+*.dof linguist-detectable=false
+**/*.d  linguist-detectable=false
+**/*.dof linguist-detectable=false
+
 Makefile linguist-detectable=false
 target/ linguist-vendored=true
 target/ linguist-generated=true
