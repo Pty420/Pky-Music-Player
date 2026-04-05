@@ -1,0 +1,3 @@
+Makefile linguist-detectable=false
+target/ linguist-vendored=true
+target/ linguist-generated=true
