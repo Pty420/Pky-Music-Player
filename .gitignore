@@ -1,5 +1,9 @@
 /target
-.env
-.idea/
+Cargo.lock
+**/*.rs.bk
+.zed/
+.zed-state.json
+.DS_Store
 *.swp
-*.log
+*.swo
+*~
