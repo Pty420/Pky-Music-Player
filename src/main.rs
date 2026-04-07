@@ -1,5 +1,5 @@
 use crate::file_mode::BackPathMode;
-use file_mode::play_cmd;
+use file_mode::{play_cmd,file_playing_cmd};
 use rodio::{Decoder, OutputStream, Sink, Source};
 use start_menu::start_menu;
 use std::fs::File;
@@ -31,38 +31,16 @@ fn main() {
                 controller.play();
                 println!("正在循环播放指定音乐...");
                 while !controller.empty() {
-                    let mut get_input = String::new();
-                    std::io::stdin().read_line(&mut get_input).unwrap();
-                    let c: char = get_input.trim().parse().unwrap();
-                    if c == 'p' {
-                        controller.pause();
-                    } else if c == 'c' {
-                        controller.play();
-                    } else if c == 'q' {
-                        break;
-                    } else {
-                        println!("命令无效");
-                        continue;
-                    }
+                    file_playing_cmd(&controller);
                 }
+                println!("播放结束");
+                system("sleep 2");
             } else {
                 controller.append(audio_src);
                 controller.play();
                 println!("正在播放一次指定音乐...");
                 while !controller.empty() {
-                    let mut get_input = String::new();
-                    std::io::stdin().read_line(&mut get_input).unwrap();
-                    let c: char = get_input.trim().parse().unwrap();
-                    if c == 'p' {
-                        controller.pause();
-                    } else if c == 'c' {
-                        controller.play();
-                    } else if c == 'q' {
-                        break;
-                    } else {
-                        println!("命令无效");
-                        continue;
-                    }
+                    file_playing_cmd(&controller);
                 }
                 println!("播放结束");
                 system("sleep 2");

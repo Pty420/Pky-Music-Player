@@ -1,5 +1,6 @@
 use crate::utilitys::check_char::check_head_char;
 use dirs::audio_dir;
+use rodio::Sink;
 pub struct BackPathMode(pub String, pub bool);
 pub fn play_cmd() -> BackPathMode {
     loop {
@@ -60,5 +61,37 @@ pub fn play_cmd() -> BackPathMode {
         } else {
             continue;
         }
+    }
+}
+pub fn file_playing_cmd(sink: &Sink) {
+    let mut get_line = String::new();
+    std::io::stdin().read_line(&mut get_line).expect("无效指令！");
+    let get_line = get_line.trim();
+    let mut s_line = get_line.split_whitespace();
+    match s_line.next() {
+        Some("pause") => sink.pause(),
+        Some("play") => sink.play(),
+        Some("quit") => sink.clear(),
+        Some("set") => match s_line.next() {
+            Some("volume") => {
+                if let Ok(volume) = s_line.next().unwrap().trim().parse::<f32>() {
+                    if let None = s_line.next() {
+                        if volume>=0.0 && volume<=1.0 {
+                            sink.set_volume(volume);
+                        } else {
+                            println!("音量大小必须在 0.0 ~ 1.0 之间！");
+                        }
+                    } else {
+                        println!("存在未知指令或参数!");
+                    }
+                } else {
+                    println!("音量大小必须是一个有效数字！");
+                }
+            },
+            Some(other) => println!("未能匹配到指令\"{}\"", other),
+            None => println!("没有指定音量大小！"),
+        },
+        Some(other) => println!("未能匹配到指令\"{}\"",other),
+        None => println!("命令不能为空！"),
     }
 }
