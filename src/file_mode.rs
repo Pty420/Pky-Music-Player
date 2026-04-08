@@ -1,4 +1,4 @@
-use crate::utilitys::check_char::check_head_char;
+use crate::utilitys::{check_char::check_head_char,system_fn::system};
 use dirs::audio_dir;
 use rodio::Sink;
 pub struct BackPathMode(pub String, pub bool);
@@ -80,18 +80,33 @@ pub fn file_playing_cmd(sink: &Sink) {
                             sink.set_volume(volume);
                         } else {
                             println!("音量大小必须在 0.0 ~ 1.0 之间！");
+                            system("sleep 1");
                         }
                     } else {
                         println!("存在未知指令或参数!");
+                        system("sleep 1");
                     }
                 } else {
                     println!("音量大小必须是一个有效数字！");
+                    system("sleep 1");
                 }
             },
-            Some(other) => println!("未能匹配到指令\"{}\"", other),
-            None => println!("没有指定音量大小！"),
+            Some(other) => {
+                println!("未能匹配到指令\"{}\"", other);
+                system("sleep 1");
+            }
+            None => {
+                println!("没有指定音量大小！");
+                system("sleep 1");
+            }
         },
-        Some(other) => println!("未能匹配到指令\"{}\"",other),
-        None => println!("命令不能为空！"),
+        Some(other) => {
+            println!("未能匹配到指令\"{}\"",other);
+            system("sleep 1");
+        }
+        None => {
+            println!("命令不能为空！");
+            system("sleep 1");
+        }
     }
 }
