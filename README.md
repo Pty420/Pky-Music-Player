@@ -1,4 +1,4 @@
-# 注意：目前仅支持Linux(x86架构或loongarch64架构)
+# 支持 x86 Windows、x86 Linux、loongarch64 Linux
 
 # PkyMusic
 这是一个基于 Rust 中的 Rodio 开发的简易CLI命令行音频播放器
@@ -70,6 +70,8 @@ set volume [0 ~ 1]
 
 部分路径可能会出现空格，尤其是在你的音频文件名之中，这你无需担心，因为程序会将 play [参数] 之后的所有内容都算作路径,例如 play user/m usic.mp3是有效的
 
+注意：即使你是 Windows 用户，也请使用 / ，而不是 \
+
 ### x86架构版本可能会遇到的问题(以 Fedora Linux 43 为例)
 1. 依赖缺失
 
@@ -100,6 +102,10 @@ sudo apt install pipewire pipewire-alsa pipewire-pulse
 systemctl --user restart pipewire pipewire-pulse
 ```
 
-3. 其他bug
+3. 编译时的一些问题
+
+若编译报错，请尝试删除项目根目录下的 Cargo.lock ,并修改配置文件 Cargo.toml 中 edition 的版本为 "2021"
+
+4. 其他bug
 
 我会努力完善和修复:)

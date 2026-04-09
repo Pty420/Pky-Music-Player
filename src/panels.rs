@@ -1,7 +1,5 @@
-use crate::utilitys::system_fn::system;
 use rodio::Sink;
 pub fn start_menu() -> String {
-    system("clear");
     println!(
         "
 ---------------PkyMusic---------------

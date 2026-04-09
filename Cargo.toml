@@ -6,3 +6,4 @@ edition = "2024"
 [dependencies]
 rodio = "0.17"
 dirs = "5.0"
+clearscreen = "4.0"
