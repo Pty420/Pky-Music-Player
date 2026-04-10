@@ -104,7 +104,21 @@ systemctl --user restart pipewire pipewire-pulse
 
 3. 编译时的一些问题
 
-若编译报错，请尝试删除项目根目录下的 Cargo.lock ,并修改配置文件 Cargo.toml 中 edition 的版本为 "2021"
+若编译报错，请尝试删除项目根目录下的 Cargo.lock ,并修改配置文件 Cargo.toml ,如下面所示
+```text
+[package]
+name = "pky_music"
+version = "0.1.3"
+edition = "2021"
+
+[dependencies]
+rodio = "0.17"
+dirs = "5.0"
+clearscreen = "2.0"
+home = "=0.5.5"
+quote = "=1.0.33"
+unicode-ident = "=1.0.9"
+```
 
 4. 其他bug
 
