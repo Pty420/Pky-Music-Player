@@ -1,53 +1,28 @@
 use rodio::Sink;
 use std::path::Path;
-pub fn start_menu() -> String {
+pub fn start_menu() {
     println!(
         "
 -------------------------PkyMusic-------------------------
 |                                                        |
-|                     请选择读取模式                     |
-|                        ↓     ↓                         |
-|                      Fold   File                       |
-|                      文件夹 文件                       |
+|                     欢迎使用PkyMusic                   |
+|                                                        |
+|                      请输入您的指令                    |
+|                                                        |
+|             支持识别文件夹文件和直接播放文件           |
 |                                                        |
 ----------------------------------------------------------"
     );
-    println!("fold/file:");
-    loop {
-        let mut choice = String::new();
-        std::io::stdin().read_line(&mut choice).unwrap();
-        let choice = choice.trim();
-        if choice == "fold" {
-            println!("功能待完善");
-            continue;
-        } else if choice == "file" {
-            return "file".to_string();
-        } else {
-            println!("\"{}\"是无效指令! 请重新输入:", choice);
-            continue;
-        }
-    }
 }
-
-pub fn mode_selected() {
-    println!(
-        "
------------------------PkyMusic------------------------
-|                                                     |
-|                   mode  ->  file                    |
-|                                                     |
--------------------------------------------------------"
-    );
-}
-pub fn state_panel(sink: &Sink, path: &Path) {
+pub fn state_panel(sink: &Sink, path: &Path, files_count: usize) {
     let audio_name = path.file_stem().unwrap().to_string_lossy();
     println!(
         "
 ---------------------PkyMusic----------------------
  ♫     ♫     ♫     ♫     ♫     ♫     ♫     ♫     ♫
 ---------------------------------------------------
- 音量:{:.2} 状态:{}
- 音频:{}
+ 音量:{:.2} 状态:{} 音频数量:{}
+ 音频/歌单:{}
 ---------------------------------------------------
  ♪   ♪   ♪   ♪   ♪   ♪   ♪   ♪   ♪   ♪   ♪   ♪   ♪
 ---------------------------------------------------
@@ -60,6 +35,7 @@ pub fn state_panel(sink: &Sink, path: &Path) {
         } else {
             "未知状态"
         },
+        files_count,
         audio_name
     );
 }

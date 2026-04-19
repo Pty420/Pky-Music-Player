@@ -1,48 +1,62 @@
 use clearscreen::clear;
-use file_mode::BackPathMode;
-use file_mode::{file_playing_cmd, play_cmd};
-use panels::{start_menu, state_panel};
+use panels::state_panel;
+use play_cmd::BackPathMode;
+use play_cmd::play_cmd;
+use playing::playing_cmd;
 use rodio::{Decoder, OutputStream, Sink, Source};
-use std::fs::File;
-use std::thread;
-use std::time;
-mod file_mode;
+use std::{fs::File, thread, time};
+use utilitys::append_audio_files::append_audio_files;
 mod panels;
+mod play_cmd;
+mod playing;
 mod utilitys;
 fn main() {
     loop {
-        clear().unwrap();
-        let read_mode = start_menu();
-        if read_mode == "file" {
-            let BackPathMode(path, is_loop) = play_cmd();
-            let (_stream, stream_controller) = OutputStream::try_default().unwrap();
-            let audio_file = File::open(&path).unwrap();
+        let BackPathMode(path, is_loop) = play_cmd();
+        let (_stream, stream_controller) = OutputStream::try_default().unwrap();
+        if path.is_file() {
             let controller = Sink::try_new(&stream_controller).unwrap();
-            let audio_src = Decoder::new(audio_file).unwrap();
             controller.set_volume(0.3);
             if is_loop {
+                let audio_file = File::open(&path).expect("文件无法读取!");
+                let audio_src = Decoder::new(audio_file).expect("文件解析失败!");
                 controller.append(audio_src.repeat_infinite());
                 controller.play();
                 println!("正在循环播放指定音乐...");
                 while !controller.empty() {
                     clear().unwrap();
-                    state_panel(&controller, &path);
-                    file_playing_cmd(&controller);
+                    state_panel(&controller, &path, 1);
+                    playing_cmd(&controller);
                 }
                 println!("播放结束");
                 thread::sleep(time::Duration::from_secs(2));
             } else {
-                controller.append(audio_src);
+                append_audio_files(&path, &controller);
                 controller.play();
                 println!("正在播放一次指定音乐...");
                 while !controller.empty() {
                     clear().unwrap();
-                    state_panel(&controller, &path);
-                    file_playing_cmd(&controller);
+                    state_panel(&controller, &path, 1);
+                    playing_cmd(&controller);
                 }
                 println!("播放结束");
                 thread::sleep(time::Duration::from_secs(2));
             }
+        } else {
+            let controller = Sink::try_new(&stream_controller).unwrap();
+            let mut is_quit = false;
+            while !is_quit {
+                append_audio_files(&path, &controller);
+                let files_count = controller.len();
+                controller.set_volume(0.3);
+                while !controller.empty() {
+                    clear().unwrap();
+                    state_panel(&controller, &path, files_count);
+                    is_quit = playing_cmd(&controller);
+                }
+            }
+            //println!("播放结束");
+            //thread::sleep(time::Duration::from_secs(2));
         }
     }
 }
