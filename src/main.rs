@@ -1,4 +1,5 @@
 use clearscreen::clear;
+use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
 use panels::state_panel;
 use play_cmd::BackPathMode;
 use play_cmd::play_cmd;
@@ -23,22 +24,26 @@ fn main() {
                 controller.append(audio_src.repeat_infinite());
                 controller.play();
                 println!("正在循环播放指定音乐...");
+                enable_raw_mode().expect("终端模式切换失败!");
                 while !controller.empty() {
                     clear().unwrap();
                     state_panel(&controller, &path, 1);
                     playing_cmd(&controller);
                 }
+                disable_raw_mode().expect("终端模式切换失败!");
                 println!("播放结束");
                 thread::sleep(time::Duration::from_secs(2));
             } else {
                 append_audio_files(&path, &controller);
                 controller.play();
                 println!("正在播放一次指定音乐...");
+                enable_raw_mode().expect("终端模式切换失败!");
                 while !controller.empty() {
                     clear().unwrap();
                     state_panel(&controller, &path, 1);
                     playing_cmd(&controller);
                 }
+                disable_raw_mode().expect("终端模式切换失败!");
                 println!("播放结束");
                 thread::sleep(time::Duration::from_secs(2));
             }
@@ -49,14 +54,16 @@ fn main() {
                 append_audio_files(&path, &controller);
                 let files_count = controller.len();
                 controller.set_volume(0.3);
+                enable_raw_mode().expect("终端模式切换失败!");
                 while !controller.empty() {
                     clear().unwrap();
                     state_panel(&controller, &path, files_count);
                     is_quit = playing_cmd(&controller);
                 }
+                disable_raw_mode().expect("终端模式切换失败!");
             }
-            //println!("播放结束");
-            //thread::sleep(time::Duration::from_secs(2));
+            println!("播放结束");
+            thread::sleep(time::Duration::from_secs(2));
         }
     }
 }

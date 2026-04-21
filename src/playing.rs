@@ -1,61 +1,32 @@
+use crossterm::event::{Event, KeyCode, poll, read};
 use rodio::Sink;
-use std::{thread, time};
+use std::time::Duration;
 pub fn playing_cmd(sink: &Sink) -> bool {
-    let mut get_line = String::new();
-    std::io::stdin()
-        .read_line(&mut get_line)
-        .expect("无效指令！");
-    let get_line = get_line.trim();
-    let mut s_line = get_line.split_whitespace();
-    match s_line.next() {
-        Some("pause") => sink.pause(),
-        Some("play") => sink.play(),
-        Some("skip") => {
-            if sink.len() > 1 {
-                sink.skip_one();
-            } else {
-                sink.clear();
-            }
-        }
-        Some("quit") => {
-            sink.clear();
-            return true;
-        }
-        Some("set") => match s_line.next() {
-            Some("volume") => {
-                if let Ok(volume) = s_line.next().unwrap().trim().parse::<f32>() {
-                    if let None = s_line.next() {
-                        if volume >= 0.0 && volume <= 1.0 {
-                            sink.set_volume(volume);
-                        } else {
-                            println!("音量大小必须在 0.0 ~ 1.0 之间！");
-                            thread::sleep(time::Duration::from_secs(1));
-                        }
+    if poll(Duration::from_millis(100)).expect("监听键盘输入出现错误!") {
+        if let Event::Key(key) = read().expect("获取按键出现错误!") {
+            match key.code {
+                KeyCode::Char(' ') => {
+                    if sink.is_paused() {
+                        sink.play();
                     } else {
-                        println!("存在未知指令或参数!");
-                        thread::sleep(time::Duration::from_secs(1));
+                        sink.pause();
                     }
-                } else {
-                    println!("音量大小必须是一个有效数字！");
-                    thread::sleep(time::Duration::from_secs(1));
                 }
+                KeyCode::Up => {
+                    sink.set_volume(sink.volume() + 0.05);
+                }
+                KeyCode::Down => {
+                    sink.set_volume(sink.volume() - 0.05);
+                }
+                KeyCode::Esc => {
+                    sink.clear();
+                    return true;
+                }
+                KeyCode::Char('n') => {
+                    sink.skip_one();
+                }
+                _ => {}
             }
-            Some(other) => {
-                println!("未能匹配到指令\"{}\"", other);
-                thread::sleep(time::Duration::from_secs(1));
-            }
-            None => {
-                println!("没有指定音量大小！");
-                thread::sleep(time::Duration::from_secs(1));
-            }
-        },
-        Some(other) => {
-            println!("未能匹配到指令\"{}\"", other);
-            thread::sleep(time::Duration::from_secs(1));
-        }
-        None => {
-            println!("命令不能为空！");
-            thread::sleep(time::Duration::from_secs(1));
         }
     }
     false
