@@ -45,24 +45,10 @@ open [文件夹路径]
 
 ![播放效果](images/2.png "播放效果")
 
-在音乐播放过程中，程序仍会获取你的输入，这是程序在获取你的命令
+在音乐播放过程中，你可以进行以下交互
 
-```bash
-#暂停
-pause
-
-#继续播放
-play
-
-#下一首
-skip
-
-#退出
-quit
-
-#设置音量
-set volume [0 ~ 1]
-```
+键盘按下
+Space(暂停/继续),n(下一首),Up(提高音量),Down(降低音量),Esc(退出播放状态)
 
 ### 注意:
 1. play指令中的参数目前仅支持 -l 表示循环播放，如果不输入参数，就会默认单次播放
@@ -111,7 +97,7 @@ systemctl --user restart pipewire pipewire-pulse
 
 3. 编译时的一些问题
 
-若编译报错，请尝试删除项目根目录下的 Cargo.lock ,并修改配置文件 Cargo.toml ,如下面所示
+若编译报版本问题，很有可能是你的Rust版本过低,请尝试删除项目根目录下的 Cargo.lock ,并修改配置文件 Cargo.toml ,如下面所示
 ```text
 [package]
 name = "pky_music"
@@ -126,6 +112,7 @@ home = "=0.5.5"
 quote = "=1.0.33"
 unicode-ident = "=1.0.9"
 ```
+或者你可以到Rust官网安装较新版本的 Rust,因为自1.71版本开始，龙芯 ABI 2.0 版本的 Rust 工具链由Rust官方推出并维护！
 
 4. 其他bug
 
