@@ -1,5 +1,7 @@
-use clearscreen::clear;
-use crossterm::terminal::{disable_raw_mode, enable_raw_mode};
+use crossterm::{
+    cursor, execute,
+    terminal::{Clear, ClearType, disable_raw_mode, enable_raw_mode},
+};
 use panels::state_panel;
 use play_cmd::BackPathMode;
 use play_cmd::play_cmd;
@@ -25,11 +27,19 @@ fn main() {
                 controller.play();
                 println!("正在循环播放指定音乐...");
                 enable_raw_mode().expect("终端模式切换失败!");
+                execute!(std::io::stdout(), cursor::Hide).unwrap();
                 while !controller.empty() {
-                    clear().unwrap();
+                    execute!(std::io::stdout(), cursor::MoveTo(0, 0)).unwrap();
+                    execute!(
+                        std::io::stdout(),
+                        Clear(ClearType::All),
+                        Clear(ClearType::Purge)
+                    )
+                    .unwrap();
                     state_panel(&controller, &path, 1);
                     playing_cmd(&controller);
                 }
+                execute!(std::io::stdout(), cursor::Hide).unwrap();
                 disable_raw_mode().expect("终端模式切换失败!");
                 println!("播放结束");
                 thread::sleep(time::Duration::from_secs(2));
@@ -38,11 +48,19 @@ fn main() {
                 controller.play();
                 println!("正在播放一次指定音乐...");
                 enable_raw_mode().expect("终端模式切换失败!");
+                execute!(std::io::stdout(), cursor::Hide).unwrap();
                 while !controller.empty() {
-                    clear().unwrap();
+                    execute!(std::io::stdout(), cursor::MoveTo(0, 0)).unwrap();
+                    execute!(
+                        std::io::stdout(),
+                        Clear(ClearType::All),
+                        Clear(ClearType::Purge)
+                    )
+                    .unwrap();
                     state_panel(&controller, &path, 1);
                     playing_cmd(&controller);
                 }
+                execute!(std::io::stdout(), cursor::Hide).unwrap();
                 disable_raw_mode().expect("终端模式切换失败!");
                 println!("播放结束");
                 thread::sleep(time::Duration::from_secs(2));
@@ -55,15 +73,24 @@ fn main() {
                 let files_count = controller.len();
                 controller.set_volume(0.3);
                 enable_raw_mode().expect("终端模式切换失败!");
+                execute!(std::io::stdout(), cursor::Hide).unwrap();
                 while !controller.empty() {
-                    clear().unwrap();
+                    execute!(std::io::stdout(), cursor::MoveTo(0, 0)).unwrap();
+                    execute!(
+                        std::io::stdout(),
+                        Clear(ClearType::All),
+                        Clear(ClearType::Purge)
+                    )
+                    .unwrap();
                     state_panel(&controller, &path, files_count);
                     is_quit = playing_cmd(&controller);
                 }
+                execute!(std::io::stdout(), cursor::Hide).unwrap();
                 disable_raw_mode().expect("终端模式切换失败!");
             }
             println!("播放结束");
-            thread::sleep(time::Duration::from_secs(2));
+            thread::sleep(time::Duration::from_secs(1));
         }
+        execute!(std::io::stdout(), cursor::Show).unwrap();
     }
 }

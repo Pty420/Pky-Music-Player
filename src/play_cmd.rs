@@ -1,12 +1,21 @@
 use crate::panels::start_menu;
 use crate::utilitys::check_char::check_head_char;
-use clearscreen::clear;
+use crossterm::{
+    cursor, execute,
+    terminal::{Clear, ClearType},
+};
 use dirs::audio_dir;
 use std::{path::PathBuf, thread, time};
 pub struct BackPathMode(pub PathBuf, pub bool);
 pub fn play_cmd() -> BackPathMode {
     loop {
-        clear().unwrap();
+        execute!(
+            std::io::stdout(),
+            cursor::MoveTo(0, 0),
+            Clear(ClearType::All),
+            Clear(ClearType::Purge)
+        )
+        .unwrap();
         start_menu();
         let mut line = String::new();
         std::io::stdin().read_line(&mut line).expect("未知错误！");

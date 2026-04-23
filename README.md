@@ -95,25 +95,6 @@ sudo apt install pipewire pipewire-alsa pipewire-pulse
 systemctl --user restart pipewire pipewire-pulse
 ```
 
-3. 编译时的一些问题
-
-若编译报版本问题，很有可能是你的Rust版本过低,请尝试删除项目根目录下的 Cargo.lock ,并修改配置文件 Cargo.toml ,如下面所示
-```text
-[package]
-name = "pky_music"
-version = "0.1.3"
-edition = "2021"
-
-[dependencies]
-rodio = "0.17"
-dirs = "5.0"
-clearscreen = "2.0"
-home = "=0.5.5"
-quote = "=1.0.33"
-unicode-ident = "=1.0.9"
-```
-或者你可以到Rust官网安装较新版本的 Rust,因为自1.71版本开始，龙芯 ABI 2.0 版本的 Rust 工具链由Rust官方推出并维护！
-
-4. 其他bug
+3. 其他bug
 
 我会努力完善和修复:)
