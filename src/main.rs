@@ -42,8 +42,24 @@ fn main() {
                 3 => {
                     let mut full_path = path.clone();
                     full_path.push(&audio_files[audio_number]);
-                    draw_playing_screen(frame, &audio_files[audio_number], &sink, &path);
-                    play_file(&sink, &full_path);
+                    draw_playing_screen(
+                        frame,
+                        if audio_number == 0 {
+                            &audio_files[0]
+                        } else {
+                            &audio_files[audio_number - 1]
+                        },
+                        &sink,
+                        &path,
+                    );
+                    if sink.empty() {
+                        play_file(&sink, &full_path);
+                        audio_number = if audio_number == audio_files.len() - 1 {
+                            0
+                        } else {
+                            audio_number + 1
+                        };
+                    }
                 }
                 _ => {}
             })
@@ -115,21 +131,16 @@ fn main() {
                         if window_number == 3 {
                             sink.clear();
                             sink.play();
-                            audio_number = if audio_number < audio_files.len() - 1 {
-                                audio_number + 1
-                            } else {
-                                0
-                            }
                         }
                     }
                     KeyCode::PageUp => {
                         if window_number == 3 {
                             sink.clear();
                             sink.play();
-                            audio_number = if audio_number > 0 {
-                                audio_number - 1
+                            audio_number = if audio_number == 1 {
+                                audio_files.len() - 2
                             } else {
-                                audio_files.len() - 1
+                                audio_number - 2
                             }
                         }
                     }
